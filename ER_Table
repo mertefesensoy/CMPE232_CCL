@@ -1,0 +1,100 @@
+Table Products {
+    ProductID int [pk, increment]
+    Name varchar
+    Brand varchar
+    Flavor varchar
+    PackSize varchar
+    Price decimal
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table Inventory {
+    InventoryID int [pk, increment]
+    ProductID int [ref: > Products.ProductID]
+    EmployeeID int [ref: > Employees.EmployeeID] // New Foreign Key to Employees
+    QuantityAvailable int [default: 0]
+    WarehouseLocation varchar
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+Table Suppliers {
+    SupplierID int [pk, increment]
+    Name varchar
+    ContactInfo varchar
+    Address varchar
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table Orders {
+    OrderID int [pk, increment]
+    CustomerID int [ref: > Customers.CustomerID]
+    EmployeeID int [ref: > Employees.EmployeeID] // New Foreign Key to Employees
+    OrderDate date
+    TotalAmount decimal
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+Table Customers {
+    CustomerID int [pk, increment]
+    Name varchar
+    ContactInfo varchar
+    Address varchar
+    LoyaltyPoints int [default: 0]
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table Shipments {
+    ShipmentID int [pk, increment]
+    OrderID int [ref: > Orders.OrderID]
+    EmployeeID int [ref: > Employees.EmployeeID] // New Foreign Key to Employees
+    ShipmentDate date
+    EstimatedDeliveryDate date
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+Table Employees {
+    EmployeeID int [pk, increment]
+    Name varchar
+    Role varchar
+    ContactInfo varchar
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+Table PromotionalOffers {
+    OfferID int [pk, increment]
+    ProductID int [ref: > Products.ProductID]
+    DiscountRate decimal
+    StartDate date
+    EndDate date
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table OrderDetails {
+    OrderDetailID int [pk, increment]
+    OrderID int [ref: > Orders.OrderID]
+    ProductID int [ref: > Products.ProductID]
+    Quantity int
+    UnitPrice decimal
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table Staff {
+    EmployeeID int [pk, ref: > Employees.EmployeeID]
+    Department varchar
+    SupervisorID int [ref: > Employees.EmployeeID]
+}
+
+Table SupplierProducts {
+    SupplierProductID int [pk, increment]
+    SupplierID int [ref: > Suppliers.SupplierID]
+    ProductID int [ref: > Products.ProductID]
+    LastModified timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+
+Ref: "Shipments"."ShipmentID" < "Inventory"."InventoryID"
+
+Ref: "Customers"."LoyaltyPoints" < "Customers"."Address"
